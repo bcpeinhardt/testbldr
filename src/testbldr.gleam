@@ -26,6 +26,11 @@ pub fn fail(msg: String) -> TestOutcome {
   Fail(msg)
 }
 
+/// Creates a new test with the given name
+pub fn named(name: String, new_test: fn() -> TestOutcome) -> Test {
+  #(name, new_test)
+}
+
 /// The list of tests to run
 pub type TestSuite =
   List(Test)
