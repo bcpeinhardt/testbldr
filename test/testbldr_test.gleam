@@ -6,6 +6,7 @@ import testbldr
 pub fn main() {
   testbldr.new
   |> testbldr.tests(one_is_a_small_number())
+  |> testbldr.tests(one_is_a_small_number_with_use())
   |> testbldr.test("floating_test", floating)
   |> testbldr.test("should fail", failing)
   |> testbldr.test("should panic", fn() { panic })
@@ -42,4 +43,13 @@ fn one_is_a_small_number() -> List(testbldr.Test) {
     }
   }
   #(name, test)
+}
+
+fn one_is_a_small_number_with_use() -> List(testbldr.Test) {
+  use number <- list.map(list.range(2, 10))
+  use <- testbldr.named("One is less than " <> int.to_string(number))
+  case 1 < number {
+    True -> testbldr.pass()
+    False -> testbldr.fail("Shockingly 1 > " <> int.to_string(number))
+  }
 }
