@@ -1,106 +1,68 @@
 import gleam/io
-import simplifile
 import gleam/list
-import glance
-import gleam/otp/task
-import colours
 import gleam/int
+import gleam/erlang
+import gleam_community/ansi
+import testbldr/pieces
 
-/// A test has a name and a body (a function which returns a TestOutcome)
-pub type Test =
-  #(String, fn() -> TestOutcome)
-
-/// A test can either pass or fail with a given reason
-pub type TestOutcome {
-  Pass
-  Fail(msg: String)
-}
-
-/// Let a test pass
-pub fn pass() -> TestOutcome {
-  Pass
-}
-
-/// Let a test fail
-pub fn fail(msg: String) -> TestOutcome {
-  Fail(msg)
+pub fn describe(
+  name: String,
+  fun: fn() -> List(pieces.Test),
+) -> #(String, List(pieces.Test)) {
+  #(name, fun())
 }
 
 /// Creates a new test with the given name
-pub fn named(name: String, new_test: fn() -> TestOutcome) -> Test {
-  #(name, new_test)
-}
-
-/// The list of tests to run
-pub type TestSuite =
-  List(Test)
-
-/// New test suite is just an empty list
-pub const new: TestSuite = []
-
-/// Add a single test to the test suite 
-pub fn test(
-  input: TestSuite,
-  name: String,
-  new_test: fn() -> TestOutcome,
-) -> TestSuite {
-  [#(name, new_test), ..input]
-}
-
-/// Add a list of tests to the test suite
-pub fn tests(input: TestSuite, new_tests: List(Test)) -> TestSuite {
-  list.append(input, new_tests)
+pub fn named(name: String, new_test: fn() -> pieces.TestOutcome) -> pieces.Test {
+  pieces.Test(name, new_test)
 }
 
 /// Run the tests and print the test run output
-pub fn run(input: TestSuite) {
-  io.println("Running tests...\n\n")
+pub fn demonstrate(with input: List(pieces.Test), that name: String) {
+  io.println("\nDemonstrating that: " <> name <> "\n")
   let total_tests = list.length(input)
   let total_passed =
     input
-    |> list.map(fn(test) {
-      let #(name, test) = test
-      #(name, task.async(test))
-    })
     |> list.index_fold(
       0,
       fn(acc, test, index) {
-        let #(name, test) = test
-        case task.try_await_forever(test) {
-          Ok(Pass) -> {
+        let pieces.Test(name, test_function) = test
+        case erlang.rescue(test_function) {
+          Ok(pieces.Pass) -> {
             io.print(int.to_string(index + 1) <> ". ")
-            { name <> " passed" }
-            |> colours.fggreen1
+            { "Test \"" <> name <> "\" passed" }
+            |> ansi.green
             |> io.println
             acc + 1
           }
-          Ok(Fail(msg)) -> {
+          Ok(pieces.Fail(msg)) -> {
             io.print(int.to_string(index + 1) <> ". ")
-            { name <> " failed: " <> msg }
-            |> colours.fgred1
+            { "Test \"" <> name <> "\" failed: " <> msg }
+            |> ansi.red
             |> io.println
             acc
           }
           Error(_) -> {
             io.print(int.to_string(index + 1) <> ". ")
-            { name <> " panicked!" }
-            |> colours.fgred1
+            { "Test \"" <> name <> "\" panicked!" }
+            |> ansi.red
             |> io.println
             acc
           }
         }
       },
     )
+
   let ratio =
-    "\n\n" <> int.to_string(total_passed) <> "/" <> int.to_string(total_tests) <> " tests passed"
+    "\n" <> int.to_string(total_passed) <> "/" <> int.to_string(total_tests) <> " tests passed\n"
   case total_passed == total_tests {
     True ->
       ratio
-      |> colours.fggreen1
+      |> ansi.green
       |> io.println
     False ->
       ratio
-      |> colours.fgred1
+      |> ansi.red
       |> io.println
   }
 }
