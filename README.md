@@ -19,7 +19,7 @@ import gleam/dynamic
 
 pub fn main() {
 
-  // Lets do a more real world example. Lets say you have some test
+  // Lets say you have some test
   // cases in a json file. Here's an example of building a test suite
   // from them
 

@@ -4,22 +4,15 @@ import gleam/list
 import gleam/int
 import gleam/json
 import gleam/dynamic
+import gleam/string
 
 pub fn main() {
   // Basic example of programatically building a test case
   testbldr.demonstrate(
-    // Give this grouping of tests a name
     that: "Some numbers are odd",
-    // The list of tests
-    with: // We map over the input and use it to produce tests
-    {
+    with: {
       use n <- list.map([1, 3, 5, 7, 9])
-
-      // `named` will let you dynamically name your test
-      // cases for printing
       use <- testbldr.named(int.to_string(n) <> " is odd")
-
-      // You can `should` just like gleeunit
       n % 2
       |> should.equal(1)
     },
@@ -49,9 +42,7 @@ pub fn main() {
 
   testbldr.demonstrate(
     that: "Our doubling function works",
-    with: // Decode our tests cases from the JSON. If it doesn't decode
-    // correctly we crash the whole thing because it's a test suite
-    {
+    with: {
       let assert Ok(test_cases) = test_cases_from_json(test_cases)
 
       // Map over our tests cases to start transforming them
@@ -64,6 +55,36 @@ pub fn main() {
       // The thing we're actually testing
       double(test_case.input)
       |> should.equal(test_case.expected_output)
+    },
+  )
+
+  testbldr.demonstrate(
+    that: "Boolean messages look right",
+    with: {
+      use val <- list.map([True, False])
+      use <- testbldr.named(string.inspect(val) <> " should be true")
+      val
+      |> should.be_true
+    },
+  )
+
+  testbldr.demonstrate(
+    that: "Boolean messages look right",
+    with: {
+      use val <- list.map([True, False])
+      use <- testbldr.named(string.inspect(val) <> " should be false")
+      val
+      |> should.be_false
+    },
+  )
+
+  testbldr.demonstrate(
+    that: "Result messages look right",
+    with: {
+      use val <- list.map([Ok(Nil), Error(Nil)])
+      use <- testbldr.named(string.inspect(val) <> " should be ok")
+      val
+      |> should.be_ok
     },
   )
 }

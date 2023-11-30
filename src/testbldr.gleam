@@ -33,13 +33,18 @@ pub fn demonstrate(with input: List(pieces.Test), that name: String) {
             { "Test \"" <> name <> "\" passed" }
             |> ansi.green
             |> io.println
+
             acc + 1
           }
           Ok(pieces.Fail(msg)) -> {
             io.print(int.to_string(index + 1) <> ". ")
-            { "Test \"" <> name <> "\" failed: " <> msg }
+            { "Test \"" <> name <> "\" failed: " }
             |> ansi.red
             |> io.println
+
+            msg
+            |> io.println
+
             acc
           }
           Error(_) -> {
@@ -47,6 +52,7 @@ pub fn demonstrate(with input: List(pieces.Test), that name: String) {
             { "Test \"" <> name <> "\" panicked!" }
             |> ansi.red
             |> io.println
+
             acc
           }
         }
