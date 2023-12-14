@@ -2,6 +2,11 @@
 
 ## Unpublished
 
+## v0.3.0 - December 14 2023
+
+- Added `Silent` variant to test outcome so you can optionally
+  not print certain tests
+
 ## v0.2.0 - November 30 2023
 
 - Changed API completely (whoops)

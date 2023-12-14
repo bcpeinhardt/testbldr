@@ -1,22 +1,21 @@
 import testbldr
 import testbldr/should
+import testbldr/pieces
 import gleam/list
 import gleam/int
 import gleam/json
 import gleam/dynamic
 import gleam/string
+import gleam/result
 
 pub fn main() {
   // Basic example of programatically building a test case
-  testbldr.demonstrate(
-    that: "Some numbers are odd",
-    with: {
-      use n <- list.map([1, 3, 5, 7, 9])
-      use <- testbldr.named(int.to_string(n) <> " is odd")
-      n % 2
-      |> should.equal(1)
-    },
-  )
+  testbldr.demonstrate(that: "Some numbers are odd", with: {
+    use n <- list.map([1, 3, 5, 7, 9])
+    use <- testbldr.named(int.to_string(n) <> " is odd")
+    n % 2
+    |> should.equal(1)
+  })
 
   // Lets do a more real world example. Lets say you have some test
   // cases in a json file. Here's an example of building a test suite
@@ -40,53 +39,50 @@ pub fn main() {
     }
   ]"
 
-  testbldr.demonstrate(
-    that: "Our doubling function works",
-    with: {
-      let assert Ok(test_cases) = test_cases_from_json(test_cases)
+  testbldr.demonstrate(that: "Our doubling function works", with: {
+    let assert Ok(test_cases) = test_cases_from_json(test_cases)
 
-      // Map over our tests cases to start transforming them
-      use test_case <- list.map(test_cases)
+    // Map over our tests cases to start transforming them
+    use test_case <- list.map(test_cases)
 
-      // Give each test the name specified in the json, to be printed
-      // properly on test run
-      use <- testbldr.named(test_case.name)
+    // Give each test the name specified in the json, to be printed
+    // properly on test run
+    use <- testbldr.named(test_case.name)
 
-      // The thing we're actually testing
-      double(test_case.input)
-      |> should.equal(test_case.expected_output)
-    },
-  )
+    // The thing we're actually testing
+    double(test_case.input)
+    |> should.equal(test_case.expected_output)
+  })
 
-  testbldr.demonstrate(
-    that: "Boolean messages look right",
-    with: {
-      use val <- list.map([True, False])
-      use <- testbldr.named(string.inspect(val) <> " should be true")
-      val
-      |> should.be_true
-    },
-  )
+  testbldr.demonstrate(that: "Boolean messages look right", with: {
+    use val <- list.map([True, False])
+    use <- testbldr.named(string.inspect(val) <> " should be true")
+    val
+    |> should.be_true
+  })
 
-  testbldr.demonstrate(
-    that: "Boolean messages look right",
-    with: {
-      use val <- list.map([True, False])
-      use <- testbldr.named(string.inspect(val) <> " should be false")
-      val
-      |> should.be_false
-    },
-  )
+  testbldr.demonstrate(that: "Boolean messages look right", with: {
+    use val <- list.map([True, False])
+    use <- testbldr.named(string.inspect(val) <> " should be false")
+    val
+    |> should.be_false
+  })
 
-  testbldr.demonstrate(
-    that: "Result messages look right",
-    with: {
-      use val <- list.map([Ok(Nil), Error(Nil)])
-      use <- testbldr.named(string.inspect(val) <> " should be ok")
-      val
-      |> should.be_ok
-    },
-  )
+  testbldr.demonstrate(that: "Result messages look right", with: {
+    use val <- list.map([Ok(Nil), Error(Nil)])
+    use <- testbldr.named(string.inspect(val) <> " should be ok")
+    val
+    |> should.be_ok
+  })
+
+  testbldr.demonstrate(that: "Silent tests don't print", with: {
+    use val <- list.map([Ok(Nil), Error(Nil)])
+    use <- testbldr.named(string.inspect(val) <> " should be ok")
+    case result.is_ok(val) {
+      True -> pieces.Silent
+      False -> pieces.Fail("failed")
+    }
+  })
 }
 
 /// Something to parse our JSON test cases into

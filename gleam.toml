@@ -1,5 +1,5 @@
 name = "testbldr"
-version = "0.2.0"
+version = "0.3.0"
 description = "A library for programatically building and running test cases"
 
 # Fill out these fields if you intend to generate HTML documentation or publish

@@ -6,5 +6,6 @@ pub type Test {
 /// A test can either pass or fail with a given reason
 pub type TestOutcome {
   Pass
+  Silent
   Fail(msg: String)
 }
