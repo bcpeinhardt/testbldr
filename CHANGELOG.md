@@ -2,6 +2,9 @@
 
 ## Unpublished
 
+## v1.0.0 - December 28 2023
+- Completely change the api again and then do v1 (woohoo)
+
 ## v0.3.0 - December 14 2023
 
 - Added `Silent` variant to test outcome so you can optionally
