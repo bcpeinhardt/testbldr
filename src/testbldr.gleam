@@ -232,6 +232,11 @@ fn ratio_to_string(passed: Int, total: Int) -> String {
     True -> "✅"
     False -> "❌"
   }
-  
-  prefix_emoji <> " " <> int.to_string(passed) <> "/" <> int.to_string(total) <> " tests passed"
+
+  prefix_emoji
+  <> " "
+  <> int.to_string(passed)
+  <> "/"
+  <> int.to_string(total)
+  <> " tests passed"
 }

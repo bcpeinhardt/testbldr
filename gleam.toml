@@ -1,5 +1,5 @@
 name = "testbldr"
-version = "1.0.0"
+version = "1.1.0"
 description = "A library for programatically building and running test cases"
 
 # Fill out these fields if you intend to generate HTML documentation or publish
@@ -12,6 +12,6 @@ dev-dependencies = { gleeunit = "~> 1.0", gleam_json = "~> 0.7"}
 # links = [{ title = "Website", href = "https://gleam.run" }]
 
 [dependencies]
-gleam_stdlib = "~> 0.32"
+gleam_stdlib = "~> 0.34 or ~> 1.0"
 gleam_erlang = "~> 0.23"
 simplifile = "~> 1.0"

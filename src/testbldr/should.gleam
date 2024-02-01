@@ -48,5 +48,11 @@ pub fn be_error(a: Result(a, b)) -> testbldr.TestOutcome {
 }
 
 fn bin_op_msg(lhs: a, op: String, rhs: b) -> String {
-  "\nlhs: " <> string.inspect(lhs) <> "\nrhs: " <> string.inspect(rhs) <> "\nassertion lhs " <> op <> " rhs failed\n"
+  "\nlhs: "
+  <> string.inspect(lhs)
+  <> "\nrhs: "
+  <> string.inspect(rhs)
+  <> "\nassertion lhs "
+  <> op
+  <> " rhs failed\n"
 }

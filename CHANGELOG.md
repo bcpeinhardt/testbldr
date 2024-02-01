@@ -2,6 +2,9 @@
 
 ## Unpublished
 
+## v1.1.0 - 1 February 2024
+- Update gleam_stdlib = "~> 0.34 or ~> 1.0" in prep for 1.0
+
 ## v1.0.0 - December 28 2023
 - Completely change the api again and then do v1 (woohoo)
 
